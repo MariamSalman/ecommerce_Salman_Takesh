@@ -3,12 +3,15 @@ from models import Customer
 from database import db
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash
-from utils import log_to_audit, encrypt_data, decrypt_data
+from utils import log_to_audit, encrypt_data, decrypt_data, circuit_breaker
+from flask_limiter import Limiter
 
 api = Api()
 
 
 class RegisterCustomer(Resource):
+    decorators = [limiter.limit("10/minute")]  # Limit endpoint to 10 requests per minute
+
     def post(self):
         data = request.json
         full_name = data.get('full_name')
@@ -28,7 +31,6 @@ class RegisterCustomer(Resource):
             log_to_audit("customers_service", "POST /customers/register", "error", details="Duplicate username or email")
             return {"error": "Customer with this username or email already exists"}, 400
 
-        # Hash the password and encrypt sensitive data
         hashed_password = generate_password_hash(password)
         encrypted_email = encrypt_data(email)
         encrypted_address = encrypt_data(address) if address else None
@@ -48,6 +50,7 @@ class RegisterCustomer(Resource):
 
         log_to_audit("customers_service", "POST /customers/register", "success", user=username, details="Customer registered")
         return {"message": "Customer registered successfully"}, 201
+
 
 
 class UpdateCustomer(Resource):
@@ -83,6 +86,7 @@ class DeleteCustomer(Resource):
         return {"message": "Customer deleted successfully"}, 200
 
 
+
 class GetCustomers(Resource):
     def get(self):
         customers = Customer.query.all()
@@ -99,6 +103,7 @@ class GetCustomers(Resource):
             "wallet_balance": c.wallet_balance,
             "created_at": c.created_at.strftime("%Y-%m-%d %H:%M:%S")
         } for c in customers])
+
 
 
 class WalletOperation(Resource):
@@ -125,7 +130,11 @@ class WalletOperation(Resource):
         }, 200
 
 
+
 class GetCustomerByUsername(Resource):
+    decorators = [limiter.limit("5/minute")]  # Limit endpoint to 5 requests per minute
+
+    @circuit_breaker
     def get(self, username):
         customer = Customer.query.filter_by(username=username).first()
         if not customer:

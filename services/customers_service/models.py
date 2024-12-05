@@ -14,5 +14,3 @@ class Customer(db.Model):
     wallet_balance = db.Column(db.Float, default=0.0)
     created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())
 
-
-

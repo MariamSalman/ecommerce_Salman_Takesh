@@ -1,7 +1,7 @@
 import logging
-from datetime import datetime
 from cryptography.fernet import Fernet
 import requests
+from pybreaker import CircuitBreaker
 
 # Initialize logging
 logging.basicConfig(
@@ -10,58 +10,33 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Encryption key (in a real-world app, use a secure key management service)
+# Encryption key
 ENCRYPTION_KEY = Fernet.generate_key()
 cipher_suite = Fernet(ENCRYPTION_KEY)
 
-# Logging function
-def log_to_audit(service_name, endpoint, status, details):
-    """
-    Logs audit events to a file.
+# Circuit Breaker Configuration
+breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
 
-    :param service_name: Name of the service
-    :param endpoint: API endpoint accessed
-    :param status: Operation status (success, error)
-    :param details: Additional details about the operation
-    """
+# Logging Function
+def log_to_audit(service_name, endpoint, status, details):
     log_entry = f"{service_name} | {endpoint} | {status} | {details}"
     logging.info(log_entry)
 
-# Encryption utility
+# Encryption Utility
 def encrypt_data(data):
-    """
-    Encrypts the provided data.
-
-    :param data: String to encrypt
-    :return: Encrypted string
-    """
     if not data:
         return None
     return cipher_suite.encrypt(data.encode()).decode()
 
-# Decryption utility
+# Decryption Utility
 def decrypt_data(encrypted_data):
-    """
-    Decrypts the provided encrypted string.
-
-    :param encrypted_data: Encrypted string to decrypt
-    :return: Decrypted string
-    """
     if not encrypted_data:
         return None
     return cipher_suite.decrypt(encrypted_data.encode()).decode()
 
-# Cross-service communication utility
+# Cross-Service API Call
+@breaker
 def call_service_api(method, url, payload=None, headers=None):
-    """
-    Sends an API request to another service.
-
-    :param method: HTTP method (GET, POST, PUT, DELETE)
-    :param url: Full API endpoint URL
-    :param payload: Data to send in the request body
-    :param headers: HTTP headers
-    :return: Response object
-    """
     try:
         if method.upper() == "GET":
             response = requests.get(url, headers=headers)
@@ -74,7 +49,6 @@ def call_service_api(method, url, payload=None, headers=None):
         else:
             raise ValueError(f"Unsupported HTTP method: {method}")
 
-        # Log API call success
         log_to_audit(
             service_name="sales_service",
             endpoint=url,
@@ -83,7 +57,6 @@ def call_service_api(method, url, payload=None, headers=None):
         )
         return response
     except Exception as e:
-        # Log API call failure
         log_to_audit(
             service_name="sales_service",
             endpoint=url,
