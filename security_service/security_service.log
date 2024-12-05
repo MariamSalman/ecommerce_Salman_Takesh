@@ -1,0 +1,119 @@
+2024-12-05 18:29:40,953 - INFO - Security Service initialized and database created.
+2024-12-05 18:29:40,959 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5005
+2024-12-05 18:29:40,959 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-05 18:29:40,967 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:29:41,232 - INFO - Security Service initialized and database created.
+2024-12-05 18:29:41,235 - WARNING -  * Debugger is active!
+2024-12-05 18:29:41,249 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:36:41,087 - INFO - Security Service initialized and database created.
+2024-12-05 18:36:41,094 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5005
+2024-12-05 18:36:41,094 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-05 18:36:41,100 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:36:41,379 - INFO - Security Service initialized and database created.
+2024-12-05 18:36:41,381 - WARNING -  * Debugger is active!
+2024-12-05 18:36:41,395 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:36:49,100 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/app.py', reloading
+2024-12-05 18:36:49,388 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/app.py', reloading
+2024-12-05 18:36:49,537 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:36:49,822 - INFO - Security Service initialized and database created.
+2024-12-05 18:36:49,824 - WARNING -  * Debugger is active!
+2024-12-05 18:36:49,835 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:36:52,908 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/routes.py', reloading
+2024-12-05 18:36:52,915 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/routes.py', reloading
+2024-12-05 18:36:53,201 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/routes.py', reloading
+2024-12-05 18:36:53,421 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/routes.py', reloading
+2024-12-05 18:36:53,948 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:36:54,248 - INFO - Security Service initialized and database created.
+2024-12-05 18:36:54,251 - WARNING -  * Debugger is active!
+2024-12-05 18:36:54,262 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:36:55,803 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/extensions.py', reloading
+2024-12-05 18:36:56,033 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/extensions.py', reloading
+2024-12-05 18:36:56,197 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/extensions.py', reloading
+2024-12-05 18:36:56,358 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:36:56,649 - INFO - Security Service initialized and database created.
+2024-12-05 18:36:56,651 - WARNING -  * Debugger is active!
+2024-12-05 18:36:56,664 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:38:43,518 - INFO - 127.0.0.1 - - [05/Dec/2024 18:38:43] "[35m[1mGET /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:39:35,151 - INFO - 127.0.0.1 - - [05/Dec/2024 18:39:35] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:40:53,969 - INFO - 127.0.0.1 - - [05/Dec/2024 18:40:53] "[35m[1mPOST /secure_keys HTTP/1.1[0m" 500 -
+2024-12-05 18:46:54,572 - INFO - Security Service initialized and database created.
+2024-12-05 18:46:54,578 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5005
+2024-12-05 18:46:54,578 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-05 18:46:54,582 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:46:54,866 - INFO - Security Service initialized and database created.
+2024-12-05 18:46:54,869 - WARNING -  * Debugger is active!
+2024-12-05 18:46:54,881 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:47:03,084 - INFO -  * Detected change in '/Users/mariam/University/Fall 24-25/EECE 435L/ecommerce_Salman_Takesh/services/security_service/extensions.py', reloading
+2024-12-05 18:47:04,018 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 18:47:04,315 - INFO - Security Service initialized and database created.
+2024-12-05 18:47:04,318 - WARNING -  * Debugger is active!
+2024-12-05 18:47:04,329 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 18:47:08,029 - INFO - 127.0.0.1 - - [05/Dec/2024 18:47:08] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 18:49:02,668 - INFO - 127.0.0.1 - - [05/Dec/2024 18:49:02] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 18:49:34,965 - INFO - 127.0.0.1 - - [05/Dec/2024 18:49:34] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 18:49:35,314 - INFO - 127.0.0.1 - - [05/Dec/2024 18:49:35] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 18:50:27,351 - INFO - 127.0.0.1 - - [05/Dec/2024 18:50:27] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:51:23,350 - INFO - 127.0.0.1 - - [05/Dec/2024 18:51:23] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:52:10,939 - INFO - 127.0.0.1 - - [05/Dec/2024 18:52:10] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:52:27,361 - INFO - 127.0.0.1 - - [05/Dec/2024 18:52:27] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:53:47,944 - INFO - 127.0.0.1 - - [05/Dec/2024 18:53:47] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:54:08,019 - INFO - 127.0.0.1 - - [05/Dec/2024 18:54:08] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:54:37,576 - INFO - 127.0.0.1 - - [05/Dec/2024 18:54:37] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:54:43,332 - INFO - 127.0.0.1 - - [05/Dec/2024 18:54:43] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:55:27,979 - INFO - 127.0.0.1 - - [05/Dec/2024 18:55:27] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:55:40,797 - INFO - 127.0.0.1 - - [05/Dec/2024 18:55:40] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 18:55:48,775 - INFO - 127.0.0.1 - - [05/Dec/2024 18:55:48] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:05:50,793 - INFO - 127.0.0.1 - - [05/Dec/2024 19:05:50] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:06:28,579 - INFO - 127.0.0.1 - - [05/Dec/2024 19:06:28] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:11:22,979 - INFO - 127.0.0.1 - - [05/Dec/2024 19:11:22] "[35m[1mGET /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:13:18,173 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:18] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:13:21,625 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:21] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:13:25,204 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:25] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:13:28,245 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:28] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:13:42,490 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:42] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:13:44,612 - INFO - 127.0.0.1 - - [05/Dec/2024 19:13:44] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:14:06,538 - INFO - 127.0.0.1 - - [05/Dec/2024 19:14:06] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:14:23,674 - INFO - 127.0.0.1 - - [05/Dec/2024 19:14:23] "[33mPOST /audit-log HTTP/1.1[0m" 404 -
+2024-12-05 19:49:11,042 - INFO - 127.0.0.1 - - [05/Dec/2024 19:49:11] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 19:49:11,381 - INFO - 127.0.0.1 - - [05/Dec/2024 19:49:11] "[35m[1mGET /secure_keys/encryption_key HTTP/1.1[0m" 500 -
+2024-12-05 19:49:37,012 - INFO - 127.0.0.1 - - [05/Dec/2024 19:49:37] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:49:48,721 - INFO - 127.0.0.1 - - [05/Dec/2024 19:49:48] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:50:49,197 - INFO - 127.0.0.1 - - [05/Dec/2024 19:50:49] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:51:01,067 - INFO - 127.0.0.1 - - [05/Dec/2024 19:51:01] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:51:07,114 - INFO - 127.0.0.1 - - [05/Dec/2024 19:51:07] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:52:26,102 - INFO - 127.0.0.1 - - [05/Dec/2024 19:52:26] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:52:41,304 - INFO - 127.0.0.1 - - [05/Dec/2024 19:52:41] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:52:41,325 - INFO - 127.0.0.1 - - [05/Dec/2024 19:52:41] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:53:56,153 - INFO - 127.0.0.1 - - [05/Dec/2024 19:53:56] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:54:40,415 - INFO - 127.0.0.1 - - [05/Dec/2024 19:54:40] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:54:40,437 - INFO - 127.0.0.1 - - [05/Dec/2024 19:54:40] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 19:54:45,949 - INFO - 127.0.0.1 - - [05/Dec/2024 19:54:45] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 20:35:00,788 - INFO - 127.0.0.1 - - [05/Dec/2024 20:35:00] "[35m[1mGET /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 20:37:19,591 - INFO - Security Service initialized and database created.
+2024-12-05 20:37:19,597 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5005
+2024-12-05 20:37:19,597 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-05 20:37:19,603 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 20:37:19,902 - INFO - Security Service initialized and database created.
+2024-12-05 20:37:19,905 - WARNING -  * Debugger is active!
+2024-12-05 20:37:19,917 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 20:37:24,466 - INFO - 127.0.0.1 - - [05/Dec/2024 20:37:24] "[35m[1mGET /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 20:37:37,759 - INFO - 127.0.0.1 - - [05/Dec/2024 20:37:37] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 500 -
+2024-12-05 20:37:42,182 - INFO - 127.0.0.1 - - [05/Dec/2024 20:37:42] "[35m[1mPOST /secure_keys HTTP/1.1[0m" 500 -
+2024-12-05 20:37:46,242 - INFO - 127.0.0.1 - - [05/Dec/2024 20:37:46] "[35m[1mGET /secure_keys/encryption_key%0A HTTP/1.1[0m" 500 -
+2024-12-05 20:40:13,216 - INFO - Security Service initialized and database created.
+2024-12-05 20:40:13,221 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5005
+2024-12-05 20:40:13,221 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-05 20:40:13,227 - INFO -  * Restarting with watchdog (fsevents)
+2024-12-05 20:40:13,510 - INFO - Security Service initialized and database created.
+2024-12-05 20:40:13,512 - WARNING -  * Debugger is active!
+2024-12-05 20:40:13,526 - INFO -  * Debugger PIN: 128-534-550
+2024-12-05 20:40:16,489 - INFO - 127.0.0.1 - - [05/Dec/2024 20:40:16] "[33mGET /secure_keys/encryption_key%0A HTTP/1.1[0m" 404 -
+2024-12-05 20:40:19,884 - INFO - 127.0.0.1 - - [05/Dec/2024 20:40:19] "GET /audit_logs HTTP/1.1" 200 -
+2024-12-05 20:40:24,680 - INFO - 127.0.0.1 - - [05/Dec/2024 20:40:24] "[35m[1mPOST /audit_logs HTTP/1.1[0m" 201 -
+2024-12-05 20:40:30,406 - INFO - 127.0.0.1 - - [05/Dec/2024 20:40:30] "GET /audit_logs HTTP/1.1" 200 -
+2024-12-05 20:40:41,577 - INFO - 127.0.0.1 - - [05/Dec/2024 20:40:41] "[33mGET /secure_keys/encryption_key%0A HTTP/1.1[0m" 404 -

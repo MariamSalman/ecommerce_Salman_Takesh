@@ -1,0 +1,7 @@
+Flask==2.2.5
+flask-limiter
+pybreaker
+Flask-SQLAlchemy==3.0.5
+Flask-RESTful==0.3.10
+cryptography==41.0.3
+requests==2.31.0

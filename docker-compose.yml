@@ -1,0 +1,93 @@
+services:
+  # Customers Service
+  customers_service:
+    build:
+      context: ./customers_service  # Path to the customers service directory
+    container_name: customers_service
+    ports:
+      - "5000:5000"  # Expose port 5000
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1  # Enable Flask debug mode
+    depends_on:
+      - ecommerce_database  # Waits for the database to be ready
+    networks:
+      - ecommerce_network
+
+  # Inventory Service
+  inventory_service:
+    build:
+      context: ./inventory_service  # Path to the inventory service directory
+    container_name: inventory_service
+    ports:
+      - "5001:5001"  # Expose port 5001
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1  # Enable Flask debug mode
+    depends_on:
+      - ecommerce_database  # Waits for the database to be ready
+    networks:
+      - ecommerce_network
+
+  # Review Service
+  review_service:
+    build:
+      context: ./reviews_service  # Path to the review service directory
+    container_name: reviews_service
+    ports:
+      - "5002:5002"  # Expose port 5002
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1  # Enable Flask debug mode
+      - ENCRYPTION_KEY=ZMlA8QyZDi00NEbR8gG2TxX8Uq6AEG6UBFsgS2mbtcQ=
+    depends_on:
+      - ecommerce_database  # Waits for the database to be ready
+    networks:
+      - ecommerce_network
+
+  # Sales Service
+  sales_service:
+    build:
+      context: ./sales_service  # Path to the sales service directory
+    container_name: sales_service
+    ports:
+      - "5003:5003"  # Expose port 5003
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1  # Enable Flask debug mode
+      - ENCRYPTION_KEY=your_secret_key
+    depends_on:
+      - ecommerce_database  # Waits for the database to be ready
+    networks:
+      - ecommerce_network
+
+  # Database Service (MySQL)
+  ecommerce_database:
+    image: mysql:8.0
+    container_name: ecommerce_database
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecommerce_db
+    ports:
+      - "3306:3306"  # Expose MySQL port
+    volumes:
+      - ecommerce_db_data:/var/lib/mysql
+    networks:
+      - ecommerce_network
+
+  # Redis Service (for Flask-Limiter Storage, optional)
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"  # Expose Redis port
+    networks:
+      - ecommerce_network
+
+networks:
+  ecommerce_network:
+    driver: bridge
+
+volumes:
+  ecommerce_db_data:
+    driver: local
