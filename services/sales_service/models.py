@@ -1,4 +1,5 @@
 from database import db
+from datetime import datetime
 
 class Good(db.Model):
     __tablename__ = 'goods'
@@ -11,7 +12,7 @@ class Good(db.Model):
 class Sale(db.Model):
     __tablename__ = 'sales'
     id = db.Column(db.Integer, primary_key=True)
-    good_id = db.Column(db.Integer, db.ForeignKey('goods.id'), nullable=False)
+    good_id = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(80), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
