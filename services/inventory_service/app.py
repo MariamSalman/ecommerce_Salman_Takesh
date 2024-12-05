@@ -27,13 +27,49 @@ api.init_app(app)
 
 @app.errorhandler(429)
 def ratelimit_exceeded(e):
+    """
+    Handles the rate limit exceeded error (HTTP 429).
+
+    This function returns a JSON response indicating that the rate limit has been exceeded 
+    and provides the rate limit information from the configuration.
+
+    Args:
+        e (Exception): The error raised when the rate limit is exceeded.
+
+    Returns:
+        Response: JSON response indicating the rate limit error.
+    """
     return jsonify(error="Rate limit exceeded. You are allowed {} requests.".format(app.config['RATE_LIMITS'])), 429
 
 @app.errorhandler(Exception)
 def handle_general_error(e):
+    """
+    Handles general errors that occur during the request (HTTP 500).
+
+    This function returns a JSON response indicating an unexpected error has occurred 
+    during the application runtime.
+
+    Args:
+        e (Exception): The exception raised during the application runtime.
+
+    Returns:
+        Response: JSON response indicating a general internal server error.
+    """
     return jsonify(error="An unexpected error occurred: {}".format(str(e))), 500
 
 if __name__ == "__main__":
+    """
+    Initializes the Flask app and runs it.
+
+    This block sets up the database, creates all necessary tables, and starts the Flask server 
+    on port 5002 in debug mode.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     with app.app_context():
         db.create_all()  # Create tables
     app.run(debug=True, port=5002)

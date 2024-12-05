@@ -16,6 +16,30 @@ class SubmitReview(Resource):
 
     @breaker
     def post(self):
+        """
+        Submits a new review for a product.
+
+        Request Body:
+        {
+            "good_id": "int",
+            "username": "string",
+            "rating": "int",
+            "comment": "string"
+        }
+
+        Response:
+        - 201 Created: Review successfully submitted.
+          {
+            "message": "Review submitted successfully"
+          }
+        - 400 Bad Request: Missing required fields or invalid rating value.
+          {
+            "error": "All fields (good_id, username, rating, comment) are required"
+          }
+
+        This endpoint allows users to submit a review for a product. It validates the data, encrypts the comment, 
+        and stores the review in the database. If successful, it returns a success message.
+        """
         data = request.json
         good_id = data.get('good_id')
         username = data.get('username')
@@ -38,13 +62,33 @@ class SubmitReview(Resource):
         log_to_audit("reviews_service", "/reviews", "success", f"Review submitted for good_id {good_id} by {username}")
         return {"message": "Review submitted successfully"}, 201
 
-
-
 class UpdateReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
     @breaker
     def put(self, review_id):
+        """
+        Updates an existing review.
+
+        Request Body:
+        {
+            "rating": "int",
+            "comment": "string"
+        }
+
+        Response:
+        - 200 OK: Review successfully updated.
+          {
+            "message": "Review updated successfully"
+          }
+        - 404 Not Found: Review not found by `review_id`.
+          {
+            "error": "Review not found"
+          }
+
+        This endpoint allows users to update the rating and/or comment of an existing review. 
+        The comment is encrypted before storing in the database.
+        """
         data = request.json
         review = Review.query.get(review_id)
         if not review:
@@ -63,12 +107,26 @@ class UpdateReview(Resource):
         log_to_audit("reviews_service", f"/reviews/{review_id}", "success", f"Review {review_id} updated")
         return {"message": "Review updated successfully"}, 200
 
-
 class DeleteReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
     @breaker
     def delete(self, review_id):
+        """
+        Deletes a review by `review_id`.
+
+        Response:
+        - 200 OK: Review successfully deleted.
+          {
+            "message": "Review deleted successfully"
+          }
+        - 404 Not Found: Review not found by `review_id`.
+          {
+            "error": "Review not found"
+          }
+
+        This endpoint deletes a specific review from the database.
+        """
         review = Review.query.get(review_id)
         if not review:
             log_to_audit("reviews_service", f"/reviews/{review_id}", "error", "Review not found")
@@ -79,18 +137,37 @@ class DeleteReview(Resource):
         log_to_audit("reviews_service", f"/reviews/{review_id}", "success", f"Review {review_id} deleted")
         return {"message": "Review deleted successfully"}, 200
 
-
 class GetProductReviews(Resource):
     decorators = [limiter.limit("20/minute")]  # Limit this endpoint to 20 requests per minute
 
     @breaker
     def get(self, good_id):
+        """
+        Retrieves all reviews for a specific product.
+
+        Response:
+        - 200 OK: List of reviews for the product.
+          [
+            {
+              "id": "int",
+              "username": "string",
+              "rating": "int",
+              "comment": "string",
+              "status": "string"
+            }
+          ]
+        - 404 Not Found: No reviews found for the product.
+          {
+            "message": "No reviews found for the product"
+          }
+
+        This endpoint retrieves reviews for a specific product identified by `good_id`. The comment is decrypted before returning.
+        """
         try:
             reviews = Review.query.filter_by(good_id=good_id).all()
             if not reviews:
                 return {"message": "No reviews found for the product"}, 404
 
-            # Create a list of dictionaries instead of returning a Flask Response object
             response = [{
                 'id': review.id,
                 'username': review.username,
@@ -100,17 +177,33 @@ class GetProductReviews(Resource):
             } for review in reviews]
 
             log_to_audit("reviews_service", f"/reviews/product/{good_id}", "success", f"Retrieved reviews for good_id {good_id}")
-            return jsonify(response)  # Ensure response is JSON-serializable
+            return jsonify(response)
         except Exception as e:
             log_to_audit("reviews_service", f"/reviews/product/{good_id}", "error", f"Error occurred: {str(e)}")
             return {"error": f"An unexpected error occurred: {str(e)}"}, 500
-
 
 class GetCustomerReviews(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit this endpoint to 10 requests per minute
 
     @breaker
     def get(self, username):
+        """
+        Retrieves all reviews for a specific customer.
+
+        Response:
+        - 200 OK: List of reviews for the customer.
+          [
+            {
+              "id": "int",
+              "good_id": "int",
+              "rating": "int",
+              "comment": "string",
+              "status": "string"
+            }
+          ]
+
+        This endpoint retrieves all reviews submitted by a specific customer, identified by `username`.
+        """
         reviews = Review.query.filter_by(username=username).all()
         response = [{
             'id': review.id,
@@ -123,12 +216,35 @@ class GetCustomerReviews(Resource):
         log_to_audit("reviews_service", f"/reviews/customer/{username}", "success", f"Retrieved reviews for {username}")
         return jsonify(response)
 
-
 class ModerateReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
     @breaker
     def put(self, review_id):
+        """
+        Moderates a review by updating its status.
+
+        Request Body:
+        {
+            "status": "string"  # "approved" or "flagged"
+        }
+
+        Response:
+        - 200 OK: Review status updated successfully.
+          {
+            "message": "Review status updated successfully"
+          }
+        - 404 Not Found: Review not found by `review_id`.
+          {
+            "error": "Review not found"
+          }
+        - 400 Bad Request: Invalid status value.
+          {
+            "error": "Invalid status"
+          }
+
+        This endpoint updates the status of a review to either "approved" or "flagged".
+        """
         data = request.json
         status = data.get('status')
         if status not in ["approved", "flagged"]:
@@ -154,12 +270,31 @@ class ModerateReview(Resource):
         )
         return {"message": "Review status updated successfully"}, 200
 
-
 class GetReviewDetails(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit this endpoint to 10 requests per minute
 
     @breaker
     def get(self, review_id):
+        """
+        Retrieves the details of a specific review.
+
+        Response:
+        - 200 OK: Review details.
+          {
+            "id": "int",
+            "good_id": "int",
+            "username": "string",
+            "rating": "int",
+            "comment": "string",
+            "status": "string"
+          }
+        - 404 Not Found: Review not found by `review_id`.
+          {
+            "error": "Review not found"
+          }
+
+        This endpoint retrieves detailed information for a specific review.
+        """
         review = Review.query.get(review_id)
         if not review:
             log_to_audit(
@@ -186,7 +321,6 @@ class GetReviewDetails(Resource):
             details=f"Retrieved details for review {review_id}"
         )
         return jsonify(response)
-
 
 # Add API routes
 api.add_resource(SubmitReview, '/reviews')

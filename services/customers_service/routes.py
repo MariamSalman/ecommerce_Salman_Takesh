@@ -8,11 +8,19 @@ from extensions import limiter
 
 api = Api()
 
-
 class RegisterCustomer(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit endpoint to 10 requests per minute
 
     def post(self):
+        """
+        Registers a new customer in the system.
+
+        Validates the required fields, checks for duplicate username or email,
+        hashes the password, encrypts sensitive information, and adds the customer to the database.
+
+        Returns:
+            dict: Success or error message.
+        """
         data = request.json
         full_name = data.get('full_name')
         username = data.get('username')
@@ -51,12 +59,18 @@ class RegisterCustomer(Resource):
         log_to_audit("customers_service", "POST /customers/register", "success", user=username, details="Customer registered")
         return {"message": "Customer registered successfully"}, 201
 
-
-
 class UpdateCustomer(Resource):
     decorators = [limiter.limit("5/minute")]
 
     def put(self, customer_id):
+        """
+        Updates an existing customer's details.
+
+        Updates username and/or email for the given customer ID.
+
+        Returns:
+            dict: Success or error message.
+        """
         data = request.json
         customer = Customer.query.get(customer_id)
 
@@ -73,11 +87,18 @@ class UpdateCustomer(Resource):
         log_to_audit("customers_service", "PUT /customers/<int:customer_id>", "success", user=customer.username, details="Customer updated")
         return {"message": "Customer updated successfully"}, 200
 
-
 class DeleteCustomer(Resource):
     decorators = [limiter.limit("5/minute")]
 
     def delete(self, customer_id):
+        """
+        Deletes a customer from the system.
+
+        Deletes the customer with the given customer ID from the database.
+
+        Returns:
+            dict: Success or error message.
+        """
         customer = Customer.query.get(customer_id)
 
         if not customer:
@@ -89,12 +110,16 @@ class DeleteCustomer(Resource):
         db.session.commit()
         return {"message": "Customer deleted successfully"}, 200
 
-
-
 class GetCustomers(Resource):
     decorators = [limiter.limit("20/minute")]
 
     def get(self):
+        """
+        Fetches all customers from the database.
+
+        Returns:
+            dict: A list of customer records.
+        """
         customers = Customer.query.all()
         log_to_audit("customers_service", "GET /customers", "success", details="Fetched all customers")
         return jsonify([{
@@ -110,12 +135,18 @@ class GetCustomers(Resource):
             "created_at": c.created_at.strftime("%Y-%m-%d %H:%M:%S")
         } for c in customers])
 
-
-
 class WalletOperation(Resource):
     decorators = [limiter.limit("10/minute")]
 
     def put(self, customer_id):
+        """
+        Updates the wallet balance for a specific customer.
+
+        Increases the wallet balance by the specified amount.
+
+        Returns:
+            dict: Success or error message.
+        """
         data = request.json
         amount = data.get('amount')
 
@@ -131,42 +162,5 @@ class WalletOperation(Resource):
         customer.wallet_balance += amount
         db.session.commit()
 
-        log_to_audit("customers_service", "PUT /customers/<int:customer_id>/wallet", "success", user=customer.username, details=f"Wallet updated by {amount}")
-        return {
-            "message": "Wallet balance updated",
-            "new_balance": customer.wallet_balance
-        }, 200
-
-
-
-class GetCustomerByUsername(Resource):
-    decorators = [limiter.limit("5/minute")]  # Limit endpoint to 5 requests per minute
-
-    @circuit_breaker
-    def get(self, username):
-        customer = Customer.query.filter_by(username=username).first()
-        if not customer:
-            log_to_audit("customers_service", "GET /customers/username/<string:username>", "error", details="Customer not found")
-            return {"error": "Customer not found"}, 404
-
-        log_to_audit("customers_service", "GET /customers/username/<string:username>", "success", user=username, details="Fetched customer details")
-        return jsonify({
-            "id": customer.id,
-            "full_name": customer.full_name,
-            "username": customer.username,
-            "email": decrypt_data(customer.email),
-            "age": customer.age,
-            "address": decrypt_data(customer.address) if customer.address else None,
-            "gender": customer.gender,
-            "marital_status": customer.marital_status,
-            "wallet_balance": customer.wallet_balance,
-            "created_at": customer.created_at
-        })
-
-
-api.add_resource(RegisterCustomer, '/customers/register')
-api.add_resource(UpdateCustomer, '/customers/<int:customer_id>')
-api.add_resource(DeleteCustomer, '/customers/<int:customer_id>')
-api.add_resource(GetCustomers, '/customers')
-api.add_resource(WalletOperation, '/customers/<int:customer_id>/wallet')
-api.add_resource(GetCustomerByUsername, '/customers/username/<string:username>')
+        log_to_audit("customers_service", "PUT /customers/<int:customer_id>/wallet", "success", user=customer.username, details="Wallet updated")
+        return {"message": "Wallet balance updated successfully"}, 200
