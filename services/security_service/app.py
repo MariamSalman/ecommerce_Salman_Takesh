@@ -1,14 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 from database import db
 from routes import api
-import requests
 
 app = Flask(__name__)
 
-SECURITY_SERVICE_URL = "http://security_service:5005"  # URL of the Security Service
-
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///customers.db'
+# Database Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///audit_logs.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -18,4 +15,5 @@ api.init_app(app)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Create tables
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5005)
+

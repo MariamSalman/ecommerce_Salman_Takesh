@@ -1,6 +1,7 @@
 from flask import Flask
 from database import db
 from routes import api
+from utils import log_to_audit  # Import logging utility
 
 app = Flask(__name__)
 
@@ -15,4 +16,12 @@ api.init_app(app)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Create tables
+
+        # Log service initialization
+        log_to_audit(
+            service_name="sales_service",
+            endpoint="startup",
+            status="success",
+            details="Sales service initialized and database created"
+        )
     app.run(debug=True, port=5003)

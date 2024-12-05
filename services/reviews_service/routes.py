@@ -2,6 +2,7 @@ from flask_restful import Api, Resource
 from models import Review
 from database import db
 from flask import request, jsonify
+from utils import log_to_audit, encrypt_data, decrypt_data  # Import utilities
 
 api = Api()
 
@@ -13,17 +14,41 @@ class SubmitReview(Resource):
         rating = data.get('rating')
         comment = data.get('comment')
 
+        if not good_id or not username or not rating or not comment:
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint="/reviews",
+                status="error",
+                details="Missing required fields for review submission"
+            )
+            return {"error": "All fields (good_id, username, rating, comment) are required"}, 400
+
         if not (1 <= rating <= 5):
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint="/reviews",
+                status="error",
+                details="Invalid rating value"
+            )
             return {"error": "Rating must be between 1 and 5"}, 400
+
+        encrypted_comment = encrypt_data(comment)  # Encrypt sensitive data
 
         review = Review(
             good_id=good_id,
             username=username,
             rating=rating,
-            comment=comment,
+            comment=encrypted_comment,
         )
         db.session.add(review)
         db.session.commit()
+
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint="/reviews",
+            status="success",
+            details=f"Review submitted for good_id {good_id} by {username}"
+        )
         return {"message": "Review submitted successfully"}, 201
 
 class UpdateReview(Resource):
@@ -31,6 +56,12 @@ class UpdateReview(Resource):
         data = request.json
         review = Review.query.get(review_id)
         if not review:
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint=f"/reviews/{review_id}",
+                status="error",
+                details="Review not found"
+            )
             return {"error": "Review not found"}, 404
 
         if "rating" in data:
@@ -39,42 +70,76 @@ class UpdateReview(Resource):
             review.rating = data['rating']
 
         if "comment" in data:
-            review.comment = data['comment']
+            review.comment = encrypt_data(data['comment'])
 
         db.session.commit()
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/{review_id}",
+            status="success",
+            details=f"Review {review_id} updated"
+        )
         return {"message": "Review updated successfully"}, 200
 
 class DeleteReview(Resource):
     def delete(self, review_id):
         review = Review.query.get(review_id)
         if not review:
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint=f"/reviews/{review_id}",
+                status="error",
+                details="Review not found"
+            )
             return {"error": "Review not found"}, 404
 
         db.session.delete(review)
         db.session.commit()
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/{review_id}",
+            status="success",
+            details=f"Review {review_id} deleted"
+        )
         return {"message": "Review deleted successfully"}, 200
 
 class GetProductReviews(Resource):
     def get(self, good_id):
         reviews = Review.query.filter_by(good_id=good_id).all()
-        return jsonify([{
+        response = [{
             'id': review.id,
             'username': review.username,
             'rating': review.rating,
-            'comment': review.comment,
+            'comment': decrypt_data(review.comment),
             'status': review.status
-        } for review in reviews])
+        } for review in reviews]
+
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/product/{good_id}",
+            status="success",
+            details=f"Retrieved reviews for good_id {good_id}"
+        )
+        return jsonify(response)
 
 class GetCustomerReviews(Resource):
     def get(self, username):
         reviews = Review.query.filter_by(username=username).all()
-        return jsonify([{
+        response = [{
             'id': review.id,
             'good_id': review.good_id,
             'rating': review.rating,
-            'comment': review.comment,
+            'comment': decrypt_data(review.comment),
             'status': review.status
-        } for review in reviews])
+        } for review in reviews]
+
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/customer/{username}",
+            status="success",
+            details=f"Retrieved reviews for username {username}"
+        )
+        return jsonify(response)
 
 class ModerateReview(Resource):
     def put(self, review_id):
@@ -85,26 +150,52 @@ class ModerateReview(Resource):
 
         review = Review.query.get(review_id)
         if not review:
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint=f"/reviews/moderate/{review_id}",
+                status="error",
+                details="Review not found"
+            )
             return {"error": "Review not found"}, 404
 
         review.status = status
         db.session.commit()
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/moderate/{review_id}",
+            status="success",
+            details=f"Moderated review {review_id} to status {status}"
+        )
         return {"message": "Review status updated successfully"}, 200
 
 class GetReviewDetails(Resource):
     def get(self, review_id):
         review = Review.query.get(review_id)
         if not review:
+            log_to_audit(
+                service_name="reviews_service",
+                endpoint=f"/reviews/details/{review_id}",
+                status="error",
+                details="Review not found"
+            )
             return {"error": "Review not found"}, 404
 
-        return {
+        response = {
             'id': review.id,
             'good_id': review.good_id,
             'username': review.username,
             'rating': review.rating,
-            'comment': review.comment,
+            'comment': decrypt_data(review.comment),
             'status': review.status
         }
+
+        log_to_audit(
+            service_name="reviews_service",
+            endpoint=f"/reviews/details/{review_id}",
+            status="success",
+            details=f"Retrieved details for review {review_id}"
+        )
+        return jsonify(response)
 
 # Add API routes
 api.add_resource(SubmitReview, '/reviews')
