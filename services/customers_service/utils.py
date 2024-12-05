@@ -2,7 +2,7 @@ import requests
 from cryptography.fernet import Fernet
 from pybreaker import CircuitBreaker
 
-SECURITY_SERVICE_URL = "http://security_service:5005"
+SECURITY_SERVICE_URL = "http://127.0.0.1:5005"
 circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
 
 def log_to_audit(service, operation, status, user=None, details=None):

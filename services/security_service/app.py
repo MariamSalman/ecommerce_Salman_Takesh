@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
 from database import db
 from routes import api
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+from extensions import limiter
 import logging
+import redis
+from flask_limiter.util import get_remote_address
 
 # Initialize Flask application
 app = Flask(__name__)
@@ -11,14 +12,10 @@ app = Flask(__name__)
 # Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///audit_logs.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['RATE_LIMITS'] = ["200 per day", "50 per hour"]
+app.config['RATELIMIT_STORAGE_URI'] = "redis://localhost:6379"  # Redis storage URI
 
-# Rate Limiter Configuration
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=app.config['RATE_LIMITS']
-)
+# Configure Limiter
+limiter.init_app(app)
 
 # Initialize extensions
 db.init_app(app)

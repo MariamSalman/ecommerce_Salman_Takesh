@@ -3,7 +3,7 @@ from models import Good
 from database import db
 from flask import request, jsonify
 from utils import log_to_audit, encrypt_data, decrypt_data, circuit_breaker
-from flask_limiter import Limiter
+from extensions import limiter
 
 api = Api()
 

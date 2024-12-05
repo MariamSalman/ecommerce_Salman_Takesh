@@ -2,7 +2,7 @@ from flask_restful import Api, Resource
 from models import AuditLog, SecureKey
 from database import db
 from flask import request, jsonify
-from flask_limiter import Limiter
+from extensions import limiter  # Import limiter
 from cryptography.fernet import Fernet
 import os
 

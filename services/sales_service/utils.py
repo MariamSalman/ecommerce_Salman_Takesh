@@ -2,6 +2,7 @@ import logging
 from cryptography.fernet import Fernet
 import requests
 from pybreaker import CircuitBreaker
+import os
 
 # Initialize logging
 logging.basicConfig(
@@ -10,12 +11,14 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Encryption key
-ENCRYPTION_KEY = Fernet.generate_key()
-cipher_suite = Fernet(ENCRYPTION_KEY)
+# Encryption Key Configuration
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+if not ENCRYPTION_KEY:
+    raise ValueError("ENCRYPTION_KEY is not set or invalid.")
+cipher_suite = Fernet(ENCRYPTION_KEY.encode())
 
 # Circuit Breaker Configuration
-breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
+circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
 
 # Logging Function
 def log_to_audit(service_name, endpoint, status, details):
@@ -26,16 +29,24 @@ def log_to_audit(service_name, endpoint, status, details):
 def encrypt_data(data):
     if not data:
         return None
-    return cipher_suite.encrypt(data.encode()).decode()
+    try:
+        return cipher_suite.encrypt(data.encode()).decode()
+    except Exception as e:
+        logging.error(f"Encryption failed: {e}")
+        raise
 
 # Decryption Utility
 def decrypt_data(encrypted_data):
     if not encrypted_data:
         return None
-    return cipher_suite.decrypt(encrypted_data.encode()).decode()
+    try:
+        return cipher_suite.decrypt(encrypted_data.encode()).decode()
+    except Exception as e:
+        logging.error(f"Decryption failed: {e}")
+        raise
 
-# Cross-Service API Call
-@breaker
+# Cross-Service API Call with Circuit Breaker
+@circuit_breaker
 def call_service_api(method, url, payload=None, headers=None):
     try:
         if method.upper() == "GET":

@@ -4,7 +4,7 @@ from database import db
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash
 from utils import log_to_audit, encrypt_data, decrypt_data, circuit_breaker
-from flask_limiter import Limiter
+from extensions import limiter
 
 api = Api()
 
@@ -54,6 +54,8 @@ class RegisterCustomer(Resource):
 
 
 class UpdateCustomer(Resource):
+    decorators = [limiter.limit("5/minute")]
+
     def put(self, customer_id):
         data = request.json
         customer = Customer.query.get(customer_id)
@@ -73,6 +75,8 @@ class UpdateCustomer(Resource):
 
 
 class DeleteCustomer(Resource):
+    decorators = [limiter.limit("5/minute")]
+
     def delete(self, customer_id):
         customer = Customer.query.get(customer_id)
 
@@ -88,6 +92,8 @@ class DeleteCustomer(Resource):
 
 
 class GetCustomers(Resource):
+    decorators = [limiter.limit("20/minute")]
+
     def get(self):
         customers = Customer.query.all()
         log_to_audit("customers_service", "GET /customers", "success", details="Fetched all customers")
@@ -107,6 +113,8 @@ class GetCustomers(Resource):
 
 
 class WalletOperation(Resource):
+    decorators = [limiter.limit("10/minute")]
+
     def put(self, customer_id):
         data = request.json
         amount = data.get('amount')

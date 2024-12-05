@@ -2,16 +2,19 @@ from flask_restful import Api, Resource
 from models import Review
 from database import db
 from flask import request, jsonify
-from utils import log_to_audit, encrypt_data, decrypt_data, circuit_breaker
+from utils import log_to_audit, encrypt_data, decrypt_data, breaker
 from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address  # Import the correct key function
 
 api = Api()
 
+# Initialize Limiter with a key function
+limiter = Limiter(key_func=get_remote_address)
 
 class SubmitReview(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit this endpoint to 10 requests per minute
 
-    @circuit_breaker
+    @breaker
     def post(self):
         data = request.json
         good_id = data.get('good_id')
@@ -36,10 +39,11 @@ class SubmitReview(Resource):
         return {"message": "Review submitted successfully"}, 201
 
 
+
 class UpdateReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
-    @circuit_breaker
+    @breaker
     def put(self, review_id):
         data = request.json
         review = Review.query.get(review_id)
@@ -63,7 +67,7 @@ class UpdateReview(Resource):
 class DeleteReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
-    @circuit_breaker
+    @breaker
     def delete(self, review_id):
         review = Review.query.get(review_id)
         if not review:
@@ -79,25 +83,33 @@ class DeleteReview(Resource):
 class GetProductReviews(Resource):
     decorators = [limiter.limit("20/minute")]  # Limit this endpoint to 20 requests per minute
 
-    @circuit_breaker
+    @breaker
     def get(self, good_id):
-        reviews = Review.query.filter_by(good_id=good_id).all()
-        response = [{
-            'id': review.id,
-            'username': review.username,
-            'rating': review.rating,
-            'comment': decrypt_data(review.comment),
-            'status': review.status
-        } for review in reviews]
+        try:
+            reviews = Review.query.filter_by(good_id=good_id).all()
+            if not reviews:
+                return {"message": "No reviews found for the product"}, 404
 
-        log_to_audit("reviews_service", f"/reviews/product/{good_id}", "success", f"Retrieved reviews for good_id {good_id}")
-        return jsonify(response)
+            # Create a list of dictionaries instead of returning a Flask Response object
+            response = [{
+                'id': review.id,
+                'username': review.username,
+                'rating': review.rating,
+                'comment': decrypt_data(review.comment),
+                'status': review.status
+            } for review in reviews]
+
+            log_to_audit("reviews_service", f"/reviews/product/{good_id}", "success", f"Retrieved reviews for good_id {good_id}")
+            return jsonify(response)  # Ensure response is JSON-serializable
+        except Exception as e:
+            log_to_audit("reviews_service", f"/reviews/product/{good_id}", "error", f"Error occurred: {str(e)}")
+            return {"error": f"An unexpected error occurred: {str(e)}"}, 500
 
 
 class GetCustomerReviews(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit this endpoint to 10 requests per minute
 
-    @circuit_breaker
+    @breaker
     def get(self, username):
         reviews = Review.query.filter_by(username=username).all()
         response = [{
@@ -115,7 +127,7 @@ class GetCustomerReviews(Resource):
 class ModerateReview(Resource):
     decorators = [limiter.limit("5/minute")]  # Limit this endpoint to 5 requests per minute
 
-    @circuit_breaker
+    @breaker
     def put(self, review_id):
         data = request.json
         status = data.get('status')
@@ -146,7 +158,7 @@ class ModerateReview(Resource):
 class GetReviewDetails(Resource):
     decorators = [limiter.limit("10/minute")]  # Limit this endpoint to 10 requests per minute
 
-    @circuit_breaker
+    @breaker
     def get(self, review_id):
         review = Review.query.get(review_id)
         if not review:

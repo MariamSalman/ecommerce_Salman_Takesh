@@ -1,9 +1,8 @@
 from flask import Flask, jsonify
 from database import db
 from routes import api
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from pybreaker import CircuitBreaker
+from extensions import limiter  # Import limiter from extensions.py
 
 # Flask App Initialization
 app = Flask(__name__)
@@ -21,12 +20,8 @@ circuit_breaker = CircuitBreaker(
     reset_timeout=app.config['CIRCUIT_BREAKER_RESET_TIMEOUT']
 )
 
-# Rate Limiter Configuration
-limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=app.config['RATE_LIMITS']
-)
+limiter.init_app(app)
+
 
 # Initialize extensions
 db.init_app(app)

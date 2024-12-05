@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///reviews.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CIRCUIT_BREAKER_FAIL_MAX'] = 5
 app.config['CIRCUIT_BREAKER_RESET_TIMEOUT'] = 60
-app.config['RATE_LIMITS'] = ["200 per day", "50 per hour"]
+app.config['RATELIMIT_DEFAULT'] = "200 per day;50 per hour"  # Single string for default limits
 
 # Circuit Breaker Configuration
 circuit_breaker = CircuitBreaker(
@@ -22,9 +22,9 @@ circuit_breaker = CircuitBreaker(
 
 # Rate Limiter Configuration
 limiter = Limiter(
-    app,
-    key_func=get_remote_address,
-    default_limits=app.config['RATE_LIMITS']
+    get_remote_address,  # Key function
+    app=app,  # Flask app
+    default_limits=[app.config['RATELIMIT_DEFAULT']]  # Default rate limits
 )
 
 # Initialize extensions
@@ -33,7 +33,7 @@ api.init_app(app)
 
 @app.errorhandler(429)
 def ratelimit_exceeded(e):
-    return jsonify(error="Rate limit exceeded. You are allowed {} requests.".format(app.config['RATE_LIMITS'])), 429
+    return jsonify(error="Rate limit exceeded. You are allowed {} requests.".format(app.config['RATELIMIT_DEFAULT'])), 429
 
 @app.errorhandler(Exception)
 def handle_general_error(e):

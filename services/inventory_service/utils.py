@@ -12,7 +12,7 @@ ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY", Fernet.generate_key().decode())
 cipher_suite = Fernet(ENCRYPTION_KEY.encode())
 
 # Circuit Breaker Configuration
-breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
+circuit_breaker = CircuitBreaker(fail_max=5, reset_timeout=60)
 
 # Logging Function
 def log_to_audit(service_name, endpoint, status, user=None, details=""):
@@ -25,7 +25,7 @@ def log_to_audit(service_name, endpoint, status, user=None, details=""):
     }
     security_service_url = os.getenv("SECURITY_SERVICE_URL", "http://localhost:5005/audit-log")
 
-    @breaker
+    @circuit_breaker
     def send_audit_log():
         try:
             response = requests.post(security_service_url, json=audit_log)
